@@ -16,6 +16,7 @@ $(OUT_PATH)/$(SRC_PATH)/app_button.o \
 $(OUT_PATH)/$(SRC_PATH)/app_endpoint_cfg.o \
 $(OUT_PATH)/$(SRC_PATH)/zb_appCb.o \
 $(OUT_PATH)/$(SRC_PATH)/zcl_appCb.o \
+$(OUT_PATH)/$(SRC_PATH)/zcl_onOffCb.o \
 $(OUT_PATH)/$(SRC_PATH)/app_onoff.o \
 $(OUT_PATH)/$(SRC_PATH)/app_relay.o \
 $(OUT_PATH)/$(SRC_PATH)/app_monitoring.o \
