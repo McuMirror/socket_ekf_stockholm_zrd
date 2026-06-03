@@ -63,6 +63,8 @@ uint64_t reverse64(uint64_t in);
 uint32_t reverse32(uint32_t in);
 uint16_t reverse16(uint16_t in);
 uint8_t *print_str_zcl(uint8_t *str_zcl);
+uint8_t *digit64toString(uint64_t value);
+uint8_t *float_to_string(float val, uint8_t decimals);
 void start_message();
 double nat_log(double x);
 
