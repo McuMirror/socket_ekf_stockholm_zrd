@@ -39,6 +39,7 @@
 #define ZCL_OCTET_STR   ZCL_DATA_TYPE_OCTET_STR
 #define ZCL_UTC         ZCL_DATA_TYPE_UTC
 #define ZCL_IEEE_ADDR   ZCL_DATA_TYPE_IEEE_ADDR
+#define ZCL_SINGLE_PREC ZCL_DATA_TYPE_SINGLE_PREC
 
 /**
  *  @brief Definition for Incoming cluster / Sever Cluster
@@ -269,15 +270,18 @@ zcl_msAttr_t g_zcl_msAttrs = {
     .current_multiplier = 1,
     .current_divisor = 100,
     .current_max = DEFAULT_CURRENT_MAX,
+    .adjust_current = DEFAULT_ADJUST_CURRENT,
     .voltage = 0xffff,
     .voltage_multiplier = 1,
     .voltage_divisor = 100,
     .voltage_min = DEFAULT_VOLTAGE_MIN,
     .voltage_max = DEFAULT_VOLTAGE_MAX,
+    .adjust_voltage = DEFAULT_ADJUST_VOLTAGE,
     .power = 0x8000,
     .power_multiplier = 1,
     .power_divisor = 100,
     .power_max = DEFAULT_POWER_MAX,
+    .adjust_power = DEFAULT_ADJUST_POWER,
     .time_reload = DEFAULT_TIME_RELOAD,
     .protect_control = DEFAULT_PROTECT_CONTROL,
     .auto_restart = DEFAULT_AUTORESTART,
@@ -285,22 +289,22 @@ zcl_msAttr_t g_zcl_msAttrs = {
 
 const zclAttrInfo_t ms_attrTbl[] = {
     {ZCL_ATTRID_MEASUREMENT_TYPE,           ZCL_BITMAP32, R,    (uint8_t*)&g_zcl_msAttrs.type               },
-//    {ZCL_ATTRID_AC_FREQUENCY,               ZCL_UINT16,   RR,   (uint8_t*)&g_zcl_msAttrs.freq               },
-//    {ZCL_ATTRID_AC_FREQUENCY_MULTIPLIER,    ZCL_UINT16,   RR,   (uint8_t*)&g_zcl_msAttrs.freq_multiplier    },
-//    {ZCL_ATTRID_AC_FREQUENCY_DIVISOR,       ZCL_UINT16,   RR,   (uint8_t*)&g_zcl_msAttrs.freq_divisor       },
     {ZCL_ATTRID_RMS_CURRENT,                ZCL_UINT16,   RR,   (uint8_t*)&g_zcl_msAttrs.current            },
     {ZCL_ATTRID_AC_CURRENT_MULTIPLIER,      ZCL_UINT16,   RR,   (uint8_t*)&g_zcl_msAttrs.current_multiplier },
     {ZCL_ATTRID_AC_CURRENT_DIVISOR,         ZCL_UINT16,   RR,   (uint8_t*)&g_zcl_msAttrs.current_divisor    },
     {ZCL_ATTRID_CUSTOM_CURRENT_MAX,         ZCL_UINT16,   RW,   (uint8_t*)&g_zcl_msAttrs.current_max        },
+    {ZCL_ATTRID_CUSTOM_ADJUST_CURRENT, ZCL_SINGLE_PREC,   RW,   (uint8_t*)&g_zcl_msAttrs.adjust_current     },
     {ZCL_ATTRID_RMS_VOLTAGE,                ZCL_UINT16,   RR,   (uint8_t*)&g_zcl_msAttrs.voltage            },
     {ZCL_ATTRID_AC_VOLTAGE_MULTIPLIER,      ZCL_UINT16,   RR,   (uint8_t*)&g_zcl_msAttrs.voltage_multiplier },
     {ZCL_ATTRID_AC_VOLTAGE_DIVISOR,         ZCL_UINT16,   RR,   (uint8_t*)&g_zcl_msAttrs.voltage_divisor    },
+    {ZCL_ATTRID_CUSTOM_ADJUST_VOLTAGE, ZCL_SINGLE_PREC,   RW,   (uint8_t*)&g_zcl_msAttrs.adjust_voltage     },
     {ZCL_ATTRID_RMS_EXTREME_UNDER_VOLTAGE,  ZCL_INT16,    RW,   (uint8_t*)&g_zcl_msAttrs.voltage_min        },
     {ZCL_ATTRID_RMS_EXTREME_OVER_VOLTAGE,   ZCL_INT16,    RW,   (uint8_t*)&g_zcl_msAttrs.voltage_max        },
     {ZCL_ATTRID_ACTIVE_POWER,               ZCL_INT16,    RR,   (uint8_t*)&g_zcl_msAttrs.power              },
     {ZCL_ATTRID_AC_POWER_MULTIPLIER,        ZCL_UINT16,   RR,   (uint8_t*)&g_zcl_msAttrs.power_multiplier   },
     {ZCL_ATTRID_AC_POWER_DIVISOR,           ZCL_UINT16,   RR,   (uint8_t*)&g_zcl_msAttrs.power_divisor      },
     {ZCL_ATTRID_CUSTOM_POWER_MAX,           ZCL_INT16,    RW,   (uint8_t*)&g_zcl_msAttrs.power_max          },
+    {ZCL_ATTRID_CUSTOM_ADJUST_POWER,   ZCL_SINGLE_PREC,   RW,   (uint8_t*)&g_zcl_msAttrs.adjust_power       },
     {ZCL_ATTRID_CUSTOM_TIME_RELOAD,         ZCL_UINT16,   RW,   (uint8_t*)&g_zcl_msAttrs.time_reload        },
     {ZCL_ATTRID_CUSTOM_PROTECT_CONTROL,     ZCL_BOOLEAN,  RW,   (uint8_t*)&g_zcl_msAttrs.protect_control    },
     {ZCL_ATTRID_CUSTOM_AUTORESTART,         ZCL_BOOLEAN,  RW,   (uint8_t*)&g_zcl_msAttrs.auto_restart       },

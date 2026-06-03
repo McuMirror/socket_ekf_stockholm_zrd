@@ -111,6 +111,9 @@ void user_app_init(void)
     relay_init();
     energy_restore();
     bl0937_init(CF_GPIO, CF1_GPIO, SEL_GPIO, BL0937_MODE_CURRENT);
+    bl0937_adjustVoltage(socket_settings.adjust_voltage);
+    bl0937_adjustCurrent(socket_settings.adjust_current);
+    bl0937_adjustPower(socket_settings.adjust_power);
 
     #if ZCL_GP_SUPPORT
     /* Initialize GP */
@@ -268,17 +271,20 @@ static void print_setting_sr(nv_sts_t st, socket_settings_t *socket_settings_tmp
 
     APP_DEBUG(DEBUG_SAVE_EN, "Settings %s. Return: %s\r\n", save?"saved":"restored", st==NV_SUCC?"Ok":"Error");
 
-    APP_DEBUG(DEBUG_SAVE_EN, "status_onoff:       0x%02x\r\n", socket_settings_tmp->status_onoff);
-    APP_DEBUG(DEBUG_SAVE_EN, "startUpOnOff:       0x%02x\r\n", socket_settings_tmp->startUpOnOff);
-    APP_DEBUG(DEBUG_SAVE_EN, "current_max:        0x%04x\r\n", socket_settings_tmp->current_max);
-    APP_DEBUG(DEBUG_SAVE_EN, "power_max:          0x%04x\r\n", socket_settings_tmp->power_max);
-    APP_DEBUG(DEBUG_SAVE_EN, "voltage_min:        0x%04x\r\n", socket_settings_tmp->voltage_min);
-    APP_DEBUG(DEBUG_SAVE_EN, "voltage_max:        0x%04x\r\n", socket_settings_tmp->voltage_max);
-    APP_DEBUG(DEBUG_SAVE_EN, "time_reload:        0x%04x\r\n", socket_settings_tmp->time_reload);
-    APP_DEBUG(DEBUG_SAVE_EN, "protect_control:    0x%02x\r\n", socket_settings_tmp->protect_control);
-    APP_DEBUG(DEBUG_SAVE_EN, "auto_restart:       0x%02x\r\n", socket_settings_tmp->auto_restart);
-    APP_DEBUG(DEBUG_SAVE_EN, "key_lock:           0x%02x\r\n", socket_settings_tmp->key_lock);
-    APP_DEBUG(DEBUG_SAVE_EN, "led_control:        0x%02x\r\n", socket_settings_tmp->led_control);
+    APP_DEBUG(DEBUG_SAVE_EN, "status_onoff:     0x%02x\r\n", socket_settings_tmp->status_onoff);
+    APP_DEBUG(DEBUG_SAVE_EN, "startUpOnOff:     0x%02x\r\n", socket_settings_tmp->startUpOnOff);
+    APP_DEBUG(DEBUG_SAVE_EN, "current_max:      0x%04x\r\n", socket_settings_tmp->current_max);
+    APP_DEBUG(DEBUG_SAVE_EN, "adjust_current:   %s\r\n", float_to_string(socket_settings_tmp->adjust_current, 2));
+    APP_DEBUG(DEBUG_SAVE_EN, "power_max:        0x%04x\r\n", socket_settings_tmp->power_max);
+    APP_DEBUG(DEBUG_SAVE_EN, "adjust_power:     %s\r\n", float_to_string(socket_settings_tmp->adjust_power, 2));
+    APP_DEBUG(DEBUG_SAVE_EN, "voltage_min:      0x%04x\r\n", socket_settings_tmp->voltage_min);
+    APP_DEBUG(DEBUG_SAVE_EN, "voltage_max:      0x%04x\r\n", socket_settings_tmp->voltage_max);
+    APP_DEBUG(DEBUG_SAVE_EN, "adjust_voltage:   %s\r\n", float_to_string(socket_settings_tmp->adjust_voltage, 2));
+    APP_DEBUG(DEBUG_SAVE_EN, "time_reload:      0x%04x\r\n", socket_settings_tmp->time_reload);
+    APP_DEBUG(DEBUG_SAVE_EN, "protect_control:  0x%02x\r\n", socket_settings_tmp->protect_control);
+    APP_DEBUG(DEBUG_SAVE_EN, "auto_restart:     0x%02x\r\n", socket_settings_tmp->auto_restart);
+    APP_DEBUG(DEBUG_SAVE_EN, "key_lock:         0x%02x\r\n", socket_settings_tmp->key_lock);
+    APP_DEBUG(DEBUG_SAVE_EN, "led_control:      0x%02x\r\n", socket_settings_tmp->led_control);
 
 }
 #endif
@@ -327,9 +333,12 @@ nv_sts_t socket_settings_restore() {
         socket_settings_tmp.startUpOnOff = ZCL_START_UP_ONOFF_SET_ONOFF_TO_OFF;
         socket_settings_tmp.status_onoff = ZCL_ONOFF_STATUS_OFF;
         socket_settings_tmp.current_max = DEFAULT_CURRENT_MAX;
+        socket_settings.adjust_current = DEFAULT_ADJUST_CURRENT;
         socket_settings_tmp.power_max = DEFAULT_POWER_MAX;
+        socket_settings_tmp.adjust_power = DEFAULT_ADJUST_POWER;
         socket_settings_tmp.voltage_min = DEFAULT_VOLTAGE_MIN;
         socket_settings_tmp.voltage_max = DEFAULT_VOLTAGE_MAX;
+        socket_settings_tmp.adjust_voltage = DEFAULT_ADJUST_VOLTAGE;
         socket_settings_tmp.time_reload = DEFAULT_TIME_RELOAD;
         socket_settings_tmp.protect_control = DEFAULT_PROTECT_CONTROL;
         socket_settings_tmp.auto_restart = DEFAULT_AUTORESTART;
@@ -343,9 +352,12 @@ nv_sts_t socket_settings_restore() {
     g_zcl_onOffAttrs.key_lock = socket_settings.key_lock;
     g_zcl_onOffAttrs.led_control = socket_settings.led_control;
     g_zcl_msAttrs.current_max = socket_settings.current_max;
+    g_zcl_msAttrs.adjust_current = socket_settings.adjust_current;
     g_zcl_msAttrs.power_max = socket_settings.power_max;
+    g_zcl_msAttrs.adjust_power = socket_settings.adjust_power;
     g_zcl_msAttrs.voltage_min = socket_settings.voltage_min;
     g_zcl_msAttrs.voltage_max = socket_settings.voltage_max;
+    g_zcl_msAttrs.adjust_voltage = socket_settings.adjust_voltage;
     g_zcl_msAttrs.time_reload = socket_settings.time_reload;
     g_zcl_msAttrs.protect_control = socket_settings.protect_control;
     g_zcl_msAttrs.auto_restart = socket_settings.auto_restart;
@@ -361,9 +373,12 @@ void socket_settints_default() {
     socket_settings.startUpOnOff = ZCL_START_UP_ONOFF_SET_ONOFF_TO_OFF;
     socket_settings.status_onoff = ZCL_ONOFF_STATUS_OFF;
     socket_settings.current_max = DEFAULT_CURRENT_MAX;
+    socket_settings.adjust_current = DEFAULT_ADJUST_CURRENT;
     socket_settings.power_max = DEFAULT_POWER_MAX;
+    socket_settings.adjust_power = DEFAULT_ADJUST_POWER;
     socket_settings.voltage_min = DEFAULT_VOLTAGE_MIN;
     socket_settings.voltage_max = DEFAULT_VOLTAGE_MAX;
+    socket_settings.adjust_voltage = DEFAULT_ADJUST_VOLTAGE;
     socket_settings.time_reload = DEFAULT_TIME_RELOAD;
     socket_settings.protect_control = DEFAULT_PROTECT_CONTROL;
     socket_settings.auto_restart = DEFAULT_AUTORESTART;
@@ -377,12 +392,19 @@ void socket_settints_default() {
     g_zcl_onOffAttrs.key_lock = socket_settings.key_lock;
     g_zcl_onOffAttrs.led_control = socket_settings.led_control;
     g_zcl_msAttrs.current_max = socket_settings.current_max;
+    g_zcl_msAttrs.adjust_current = socket_settings.adjust_current;
     g_zcl_msAttrs.power_max = socket_settings.power_max;
+    g_zcl_msAttrs.adjust_power = socket_settings.adjust_power;
     g_zcl_msAttrs.voltage_min = socket_settings.voltage_min;
     g_zcl_msAttrs.voltage_max = socket_settings.voltage_max;
+    g_zcl_msAttrs.adjust_voltage = socket_settings.adjust_voltage;
     g_zcl_msAttrs.time_reload = socket_settings.time_reload;
     g_zcl_msAttrs.protect_control = socket_settings.protect_control;
     g_zcl_msAttrs.auto_restart = socket_settings.auto_restart;
+
+    bl0937_adjustVoltage(socket_settings.adjust_voltage);
+    bl0937_adjustCurrent(socket_settings.adjust_current);
+    bl0937_adjustPower(socket_settings.adjust_power);
 
     cmdOnOff_off();
 }

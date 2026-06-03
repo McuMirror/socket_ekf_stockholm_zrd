@@ -38,6 +38,7 @@
 #include "zcl_custom_attr.h"
 #include "app_led.h"
 #include "app_onoff.h"
+#include "bl0937.h"
 
 /**********************************************************************
  * LOCAL CONSTANTS
@@ -192,7 +193,6 @@ static void app_zclWriteReqCmd(uint8_t epId, uint16_t clusterId, zclWriteCmd_t *
     zclWriteRec_t *attr = pWriteReqCmd->attrList;
     bool save = false;
 
-
     if (clusterId == ZCL_CLUSTER_GEN_ON_OFF) {
         for (uint32_t i = 0; i < numAttr; i++) {
             if (attr[i].attrID == ZCL_ATTRID_START_UP_ONOFF) {
@@ -273,6 +273,39 @@ static void app_zclWriteReqCmd(uint8_t epId, uint16_t clusterId, zclWriteCmd_t *
                 if (restart == AUTORESTART_OFF || restart == AUTORESTART_ON) {
                     socket_settings.auto_restart = restart;
                     save = true;
+                }
+            } else if (attr[i].attrID == ZCL_ATTRID_CUSTOM_ADJUST_CURRENT) {
+                float adjust;
+                uint8_t *pa = (uint8_t*)&adjust;
+                pa[0] = attr[i].attrData[0];
+                pa[1] = attr[i].attrData[1];
+                pa[2] = attr[i].attrData[2];
+                pa[3] = attr[i].attrData[3];
+                APP_DEBUG(DEBUG_ZCL_CB_EN, "adjust_current: %s\r\n", float_to_string(adjust, 2));
+                if (adjust >= ADJUST_MS_MIN && adjust <= ADJUST_MS_MAX) {
+                    bl0937_adjustCurrent(adjust);
+                }
+            } else if (attr[i].attrID == ZCL_ATTRID_CUSTOM_ADJUST_VOLTAGE) {
+                float adjust;
+                uint8_t *pa = (uint8_t*)&adjust;
+                pa[0] = attr[i].attrData[0];
+                pa[1] = attr[i].attrData[1];
+                pa[2] = attr[i].attrData[2];
+                pa[3] = attr[i].attrData[3];
+                APP_DEBUG(DEBUG_ZCL_CB_EN, "adjust_voltage: %s\r\n", float_to_string(adjust, 2));
+                if (adjust >= ADJUST_MS_MIN && adjust <= ADJUST_MS_MAX) {
+                    bl0937_adjustVoltage(adjust);
+                }
+            } else if (attr[i].attrID == ZCL_ATTRID_CUSTOM_ADJUST_POWER) {
+                float adjust;
+                uint8_t *pa = (uint8_t*)&adjust;
+                pa[0] = attr[i].attrData[0];
+                pa[1] = attr[i].attrData[1];
+                pa[2] = attr[i].attrData[2];
+                pa[3] = attr[i].attrData[3];
+                APP_DEBUG(DEBUG_ZCL_CB_EN, "adjust_power: %s\r\n", float_to_string(adjust, 2));
+                if (adjust >= ADJUST_MS_MIN && adjust <= ADJUST_MS_MAX) {
+                    bl0937_adjustPower(adjust);
                 }
             }
         }
@@ -615,7 +648,7 @@ static void app_zclGetGroupMembershipRspCmdHandler(zcl_getGroupMembershipRsp_t *
  */
 status_t app_groupCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *cmdPayload) {
 
-    APP_DEBUG(DEBUG_ZCL_CB_EN, DEBUG_ZCL_CB_EN, "app_groupCb. ep: %d, cmdId\r\n", pAddrInfo->dstEp, cmdId);
+    APP_DEBUG(DEBUG_ZCL_CB_EN, "app_groupCb. ep: %d, cmdId\r\n", pAddrInfo->dstEp, cmdId);
 
 	if(pAddrInfo->dstEp == APP_ENDPOINT1) {
 		if(pAddrInfo->dirCluster == ZCL_FRAME_SERVER_CLIENT_DIR){

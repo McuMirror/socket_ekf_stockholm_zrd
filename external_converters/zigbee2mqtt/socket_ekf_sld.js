@@ -15,6 +15,9 @@ const attrPlugSwitchPowerMax = 0xf003;
 const attrPlugSwitchTimeReload = 0xf004;
 const attrPlugSwitchProtectCtrl = 0xf005;
 const attrPlugSwitchAutoRestart = 0xf006;
+const attrSocketAdjustCurrent = 0xf007;
+const attrSocketAdjustVoltage = 0xf008;
+const attrSocketAdjustPower = 0xf009;
 
 const energyResetExtend = {
     energyReset: () => {
@@ -46,6 +49,48 @@ export default {
         vendor: "Slacky-DIY",
         description: "Socket EKF with power monitoring with custom firmware",
         extend: [
+            m.deviceAddCustomCluster("seMetering", {
+                name: "seMetering",
+                ID: 0x0702,
+                attributes: {},
+                commands: {
+                    resetEnergyMeters: {
+                        name: "resetEnergyMeters",
+                        ID: 0x80,
+                        parameters: [],
+                    },
+                },
+                commandsResponse: {},
+            }),
+            m.deviceAddCustomCluster("haElectricalMeasurement", {
+                name: "haElectricalMeasurement",
+                ID: 0x0b04,
+                attributes: {
+                    customAdjustCurrent: {
+                        name: "customAdjustCurrent",
+                        ID: attrSocketAdjustCurrent,
+                        type: 0x39,
+                        write: true,
+                        max: 0xffffffff,
+                    },
+                    customAdjustVoltage: {
+                        name: "customAdjustVoltage",
+                        ID: attrSocketAdjustVoltage,
+                        type: 0x39,
+                        write: true,
+                        max: 0xffffffff,
+                    },
+                    customAdjustPower: {
+                        name: "customAdjustPower",
+                        ID: attrSocketAdjustPower,
+                        type: 0x39,
+                        write: true,
+                        max: 0xffffffff,
+                    },
+                },
+                commands: {},
+                commandsResponse: {},
+            }),
             m.onOff({powerOnBehavior: true}),
             m.binary({
                 name: "key_lock",
@@ -67,19 +112,6 @@ export default {
                 voltage: {divisor: 100},
                 power: {divisor: 100},
                 energy: {divisor: 1000000},
-            }),
-            m.deviceAddCustomCluster("seMetering", {
-                name: "seMetering",
-                ID: 0x0702,
-                attributes: {},
-                commands: {
-                    resetEnergyMeters: {
-                        name: "resetEnergyMeters",
-                        ID: 0x80,
-                        parameters: [],
-                    },
-                },
-                commandsResponse: {},
             }),
             energyResetExtend.energyReset(),
             m.binary({

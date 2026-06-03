@@ -104,6 +104,43 @@ uint8_t *digit64toString(uint64_t value) {
     return buffer;
 }
 
+uint8_t* float_to_string(float val, uint8_t decimals) {
+
+    static uint8_t buf[16] = {0};
+    uint8_t *p = buf;
+
+    if (val < 0) {
+        *p++ = '-';
+        val = -val;
+    }
+
+    uint32_t int_part = (uint32_t)val;
+    val -= (float)(int32_t)int_part;
+
+    uint8_t tmp[16];
+    uint8_t i = 0;
+    do {
+        tmp[i++] = '0' + (uint8_t)(int_part % 10);
+        int_part /= 10;
+    } while (int_part > 0);
+
+    while (i > 0)
+        *p++ = tmp[--i];
+
+    if (decimals > 0) {
+        *p++ = '.';
+        for (uint8_t j = 0; j < decimals; j++) {
+            val *= 10.0f;
+            uint8_t digit = (uint8_t)val;
+            *p++ = '0' + digit;
+            val -= (float)digit;
+        }
+    }
+
+    *p = '\0';
+    return buf;
+}
+
 uint64_t atoi(uint16_t len, uint8_t *data) {
 
     uint64_t value = 0, mp;

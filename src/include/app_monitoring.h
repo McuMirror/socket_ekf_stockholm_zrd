@@ -17,5 +17,6 @@ void energy_remove();
 void clear_auto_restart();
 void set_energy();
 int32_t energy_timerCb(void *args);
+void reset_voltage();
 
 #endif /* SRC_INCLUDE_APP_MONITORING_H_ */

@@ -1,6 +1,5 @@
+#include "app_socket.h"
 #include "bl0937.h"
-#include "drivers/drv_gpio.h"
-#include "timer.h"
 
 #define V_REF                  1.218f
 
@@ -48,11 +47,26 @@ static volatile uint8_t _cf1_mode;
 
 static uint32_t _last_sel_tick = 0;
 
-static void _calcDefaultMultipliers(void)
+static void _calcDefaulPowertMultiplier(void)
 {
     _power_multiplier   = (  50850000.0f * _vref * _vref * _voltage_resistor / _current_resistor / 48.0f / F_OSC) / 1.1371681416f;
+}
+
+static void _calcDefaultVoltageMultiplier(void)
+{
     _voltage_multiplier = ( 221380000.0f * _vref * _voltage_resistor /  2.0f / F_OSC) / 1.0474137931f;
+}
+
+static void _calcDefaultCurrentMultiplier(void)
+{
     _current_multiplier = ( 531500000.0f * _vref / _current_resistor / 24.0f / F_OSC) / 1.166666f;
+}
+
+static void _calcDefaultMultipliers(void)
+{
+    _calcDefaulPowertMultiplier();
+    _calcDefaultVoltageMultiplier();
+    _calcDefaultCurrentMultiplier();
 }
 
 _attribute_ram_code_ static void bl0937_cf_irq(void)
@@ -242,6 +256,43 @@ void bl0937_expectedActivePower(uint16_t value)
 {
     if (_power == 0) bl0937_getActivePower();
     if (_power > 0) _power_multiplier *= ((float)value / (float)_power);
+}
+
+void bl0937_adjustVoltage(float adjust) {
+    zcl_msAttr_t *ms_attrs = zcl_msAttrsGet();
+    ms_attrs->adjust_voltage = adjust;
+    if (socket_settings.adjust_voltage != adjust) {
+        socket_settings.adjust_voltage = adjust;
+        socket_settings_save();
+    }
+    _calcDefaultVoltageMultiplier();
+    float factor = (100.0f + adjust) / 100.0f;
+    _voltage_multiplier *= factor;
+    reset_voltage();
+}
+
+void bl0937_adjustCurrent(float adjust) {
+    zcl_msAttr_t *ms_attrs = zcl_msAttrsGet();
+    ms_attrs->adjust_current = adjust;
+    if (socket_settings.adjust_current != adjust) {
+        socket_settings.adjust_current = adjust;
+        socket_settings_save();
+    }
+    _calcDefaultCurrentMultiplier();
+    float factor = (100.0f + adjust) / 100.0f;
+    _current_multiplier *= factor;
+}
+
+void bl0937_adjustPower(float adjust) {
+    zcl_msAttr_t *ms_attrs = zcl_msAttrsGet();
+    ms_attrs->adjust_power = adjust;
+    if (socket_settings.adjust_power != adjust) {
+        socket_settings.adjust_power = adjust;
+        socket_settings_save();
+    }
+    _calcDefaulPowertMultiplier();
+    float factor = (100.0f + adjust) / 100.0f;
+    _power_multiplier   *= factor;
 }
 
 void bl0937_setMultipliers(float current_mul, float voltage_mul, float power_mul)
