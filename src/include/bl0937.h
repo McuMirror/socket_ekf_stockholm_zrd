@@ -18,6 +18,10 @@ uint16_t bl0937_getActivePower(void);
 uint32_t bl0937_getEnergy(void);
 void bl0937_resetEnergy(void);
 
+uint16_t bl0937_getApparentPower(void);
+uint16_t bl0937_getReactivePower(void);
+uint8_t bl0937_getPowerFactor(void);
+
 void bl0937_setResistors(float current, float voltage_upstream, float voltage_downstream);
 void bl0937_expectedCurrent(float current);
 void bl0937_expectedVoltage(uint16_t voltage);
@@ -29,5 +33,8 @@ void bl0937_adjustPower(float adjust);
 
 void bl0937_setMultipliers(float current_mul, float voltage_mul, float power_mul);
 void bl0937_resetMultipliers(void);
+float bl0937_getCurrentMultiplier(void);
+float bl0937_getVoltageMultiplier(void);
+float bl0937_getPowerMultiplier(void);
 
 #endif

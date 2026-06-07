@@ -36,7 +36,7 @@
 #define DEBUG_CONFIG_EN                 OFF
 #define DEBUG_ONOFF_EN                  ON
 #define DEBUG_SCENE_EN                  OFF
-#define DEBUG_MONITORING_EN             OFF
+#define DEBUG_MONITORING_EN             ON
 #define DEBUG_TIME_EN                   OFF
 #define DEBUG_REPORTING_EN              OFF
 #define DEBUG_OTA_EN                    OFF

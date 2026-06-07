@@ -32,7 +32,7 @@
 #define DEFAULT_POWER_MAX       3600                // 3600W
 #define DEFAULT_VOLTAGE_MIN     18000               // 180V
 #define DEFAULT_VOLTAGE_MAX     26000               // 260V
-#define DEFAULT_ADJUST_VOLTAGE  -2.5f
+#define DEFAULT_ADJUST_VOLTAGE  0.0f
 #define DEFAULT_ADJUST_CURRENT  0.0f
 #define DEFAULT_ADJUST_POWER    0.0f
 #define DEFAULT_TIME_RELOAD     TIME_RELOAD_MIN     // 5sec
