@@ -1,0 +1,342 @@
+{
+  "name": "Розетка RCS-ST16-z-SlD Slacky-DIY с энергомониторингом",
+  "manufacturer": "Slacky-DIY",
+  "model": "RCS-ST16-z-SlD",
+  "manufacturerIds": [
+    "Slacky-DIY"
+  ],
+  "modelIds": [
+    "RCS-ST16-z-SlD"
+  ],
+  "catalogId": 0,
+  "template": [
+    "/_Outlet/BindOnOff.json",
+    "/_Base/4003_StartUpOnOff.json"
+  ],
+  "init": [
+    {
+      "zcl": [
+        {
+          "endpoint": 1,
+          "cluster": "0006_OnOff",
+          "attribute": "F000_KeyLock",
+          "zclDataType": "BOOLEAN"
+        },
+        {
+          "endpoint": 1,
+          "cluster": "0006_OnOff",
+          "attribute": "F001_LED",
+          "zclDataType": "ENUMERATION_8_BIT"
+        },
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "F002_CurrentMax",
+          "zclDataType": "UNSIGNED_16_BIT_INTEGER"
+        },
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "F003_PowerMax",
+          "zclDataType": "SIGNED_16_BIT_INTEGER"
+        },
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "F004_TimeReload",
+          "zclDataType": "UNSIGNED_16_BIT_INTEGER"
+        },
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "F005_ProtectControl",
+          "zclDataType": "BOOLEAN"
+        },
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "F006_AutoRestart",
+          "zclDataType": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "link": [
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "0505_RMSVoltage"
+        }
+      ],
+      "bind": true,
+      "report": {
+        "min": 10,
+        "max": 65000,
+        "change": 500
+      }
+    },
+    {
+      "link": [
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "0508_RMSCurrent"
+        }
+      ],
+      "bind": true,
+      "report": {
+        "min": 5,
+        "max": 65000,
+        "change": 5
+      }
+    },
+    {
+      "link": [
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "050B_ActivePower"
+        }
+      ],
+      "bind": true,
+      "report": {
+        "min": 5,
+        "max": 65000,
+        "change": 5
+      }
+    },
+    {
+      "link": [
+        {
+          "endpoint": 1,
+          "cluster": "0702_Metering",
+          "attribute": "0000_CurrentSummationDelivered"
+        }
+      ],
+      "bind": true,
+      "report": true
+    }
+  ],
+  "services": [
+    {
+      "type": "C_VoltMeter",
+      "visible": false,
+      "characteristics": [
+        {
+          "type": "C_Volt",
+          "link": [
+            {
+              "endpoint": 1,
+              "cluster": "0B04_ElectricalMeasurement",
+              "attribute": "0505_RMSVoltage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "C_AmpereMeter",
+      "visible": false,
+      "characteristics": [
+        {
+          "type": "C_Ampere",
+          "link": [
+            {
+              "endpoint": 1,
+              "cluster": "0B04_ElectricalMeasurement",
+              "attribute": "0508_RMSCurrent"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "C_WattMeter",
+      "visible": false,
+      "characteristics": [
+        {
+          "type": "C_Watt",
+          "link": [
+            {
+              "endpoint": 1,
+              "cluster": "0B04_ElectricalMeasurement",
+              "attribute": "050B_ActivePower"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "C_KiloWattHourMeter",
+      "visible": false,
+      "characteristics": [
+        {
+          "type": "C_KiloWattHour",
+          "init": true,
+          "link": [
+            {
+              "endpoint": 1,
+              "cluster": "0702_Metering",
+              "attribute": "0000_CurrentSummationDelivered",
+              "source": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "options": [
+    {
+      "name": "Блокировка кнопки",
+      "description": "Заблокировать физическую кнопку на корпусе",
+      "type": "Boolean",
+      "value": false,
+      "link": [
+        {
+          "endpoint": 1,
+          "cluster": "0006_OnOff",
+          "attribute": "F000_KeyLock"
+        }
+      ]
+    },
+    {
+      "name": "Режим индикации",
+      "description": "Поведение светодиода на корпусе",
+      "type": "Integer",
+      "value": 2,
+      "values": [
+        {
+          "value": 0,
+          "name": "Выключен"
+        },
+        {
+          "value": 1,
+          "name": "Всегда включён"
+        },
+        {
+          "value": 2,
+          "name": "Следует за розеткой"
+        },
+        {
+          "value": 3,
+          "name": "Инвертированный"
+        }
+      ],
+      "link": [
+        {
+          "endpoint": 1,
+          "cluster": "0006_OnOff",
+          "attribute": "F001_LED"
+        }
+      ]
+    },
+    {
+      "name": "Защита по току",
+      "description": "Максимальный ток (мА). 0 = отключено",
+      "type": "Integer",
+      "value": 0,
+      "minValue": 0,
+      "maxValue": 16000,
+      "unit": "mA",
+      "link": [
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "F002_CurrentMax"
+        }
+      ]
+    },
+    {
+      "name": "Защита по мощности",
+      "description": "Максимальная мощность (Вт). 0 = отключено",
+      "type": "Integer",
+      "value": 0,
+      "minValue": 0,
+      "maxValue": 3600,
+      "unit": "W",
+      "link": [
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "F003_PowerMax"
+        }
+      ]
+    },
+    {
+      "name": "Минимальное напряжение",
+      "description": "Минимальное напряжение (В). 0 = отключено",
+      "type": "Integer",
+      "value": 0,
+      "minValue": 0,
+      "maxValue": 300,
+      "unit": "V",
+      "link": [
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "0808_RMSExtremeUnderVoltage",
+          "scale": 0.01
+        }
+      ]
+    },
+    {
+      "name": "Максимальное напряжение",
+      "description": "Максимальное напряжение (В). 0 = отключено",
+      "type": "Integer",
+      "value": 0,
+      "minValue": 0,
+      "maxValue": 300,
+      "unit": "V",
+      "link": [
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "0807_RMSExtremeOverVoltage",
+          "scale": 0.01
+        }
+      ]
+    },
+    {
+      "name": "Управление защитой",
+      "description": "Включить защиту по току/мощности/напряжению",
+      "type": "Boolean",
+      "value": false,
+      "link": [
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "F005_ProtectControl"
+        }
+      ]
+    },
+    {
+      "name": "Авто-перезапуск",
+      "description": "Автоматически включать розетку после снятия защиты",
+      "type": "Boolean",
+      "value": false,
+      "link": [
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "F006_AutoRestart"
+        }
+      ]
+    },
+    {
+      "name": "Время перезапуска",
+      "description": "Задержка перед авто-перезапуском (сек)",
+      "type": "Integer",
+      "value": 5,
+      "minValue": 5,
+      "maxValue": 60,
+      "unit": "sec",
+      "link": [
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "F004_TimeReload"
+        }
+      ]
+    }
+  ]
+}
