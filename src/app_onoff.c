@@ -1,6 +1,15 @@
 #include "app_socket.h"
 
-void cmdOnOff_toggle() {
+/*********************************************************************
+ * @fn      cmdOnOff_toggle
+ *
+ * @brief   toggle the relay on/off and update zcl onoff attribute
+ *
+ * @param   None
+ *
+ * @return  None
+ */
+void cmdOnOff_toggle(void) {
 
 #if UART_PRINTF_MODE
     APP_DEBUG(DEBUG_ONOFF_EN, "cmdOnOff_toggle\r\n");
@@ -22,7 +31,16 @@ void cmdOnOff_toggle() {
     set_relay_status(status);
 }
 
-void cmdOnOff_on() {
+/*********************************************************************
+ * @fn      cmdOnOff_on
+ *
+ * @brief   turn the relay on and update zcl onoff attribute
+ *
+ * @param   None
+ *
+ * @return  None
+ */
+void cmdOnOff_on(void) {
 
 #if UART_PRINTF_MODE
     APP_DEBUG(DEBUG_ONOFF_EN, "cmdOnOff_on\r\n");
@@ -39,7 +57,16 @@ void cmdOnOff_on() {
     set_relay_status(status);
 }
 
-void cmdOnOff_off() {
+/*********************************************************************
+ * @fn      cmdOnOff_off
+ *
+ * @brief   turn the relay off and update zcl onoff attribute
+ *
+ * @param   None
+ *
+ * @return  None
+ */
+void cmdOnOff_off(void) {
 
 #if UART_PRINTF_MODE
     APP_DEBUG(DEBUG_ONOFF_EN, "cmdOnOff_off\r\n");
@@ -55,6 +82,17 @@ void cmdOnOff_off() {
     set_relay_status(status);
 }
 
+/*********************************************************************
+ * @fn      remoteCmdOnOff
+ *
+ * @brief   send an on/off/toggle command to a remote zigbee endpoint
+ *
+ * @param   ep - source endpoint
+ *
+ * @param   cmd - zcl onoff command (0x00 off, 0x01 on, 0x02 toggle)
+ *
+ * @return  None
+ */
 void remoteCmdOnOff(uint8_t ep, uint8_t cmd) {
     epInfo_t dstEpInfo;
     TL_SETSTRUCTCONTENT(dstEpInfo, 0);

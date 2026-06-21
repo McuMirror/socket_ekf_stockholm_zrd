@@ -221,17 +221,17 @@ static void app_zclWriteReqCmd(uint8_t epId, uint16_t clusterId, zclWriteCmd_t *
     } else if (clusterId == ZCL_CLUSTER_MS_ELECTRICAL_MEASUREMENT) {
         for (uint8_t i = 0; i < numAttr; i++) {
             if (attr[i].attrID == ZCL_ATTRID_RMS_EXTREME_UNDER_VOLTAGE) {
-                int16_t v_min = attr[i].attrData[0] & 0xff;
+                uint16_t v_min = attr[i].attrData[0] & 0xff;
                 v_min |= (attr[i].attrData[1] << 8) & 0xffff;
-                APP_DEBUG(DEBUG_ZCL_CB_EN, "voltage_min: %d\r\n", v_min);
+                APP_DEBUG(DEBUG_ZCL_CB_EN, "voltage_min: %u\r\n", v_min);
                 if (v_min >= VOLTAGE_MIN && v_min <= VOLTAGE_MAX) {
                     socket_settings.voltage_min = v_min;
                     save = true;
                 }
             } else if (attr[i].attrID == ZCL_ATTRID_RMS_EXTREME_OVER_VOLTAGE) {
-                int16_t v_max = attr[i].attrData[0] & 0xff;
+                uint16_t v_max = attr[i].attrData[0] & 0xff;
                 v_max |= (attr[i].attrData[1] << 8) & 0xffff;
-                APP_DEBUG(DEBUG_ZCL_CB_EN, "voltage_max: %d\r\n", v_max);
+                APP_DEBUG(DEBUG_ZCL_CB_EN, "voltage_max: %u\r\n", v_max);
                 if (v_max >= VOLTAGE_MIN && v_max <= VOLTAGE_MAX) {
                     socket_settings.voltage_max = v_max;
                     save = true;

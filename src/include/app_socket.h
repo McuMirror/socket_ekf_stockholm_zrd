@@ -53,8 +53,8 @@ typedef struct __attribute__((packed)) {
     uint8_t  startUpOnOff;
     uint16_t current_max;
     int16_t  power_max;
-    int16_t  voltage_min;
-    int16_t  voltage_max;
+    uint16_t  voltage_min;
+    uint16_t  voltage_max;
     float    adjust_current;
     float    adjust_power;
     float    adjust_voltage;
@@ -85,9 +85,9 @@ extern app_ctx_t g_appCtx;
 extern bdb_commissionSetting_t g_bdbCommissionSetting;
 extern bdb_appCb_t g_zbBdbCb;
 
-nv_sts_t socket_settings_restore();
-nv_sts_t socket_settings_save();
-void socket_settints_default();
+nv_sts_t socket_settings_restore(void);
+nv_sts_t socket_settings_save(void);
+void socket_settints_default(void);
 
 status_t app_basicCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *cmdPayload);
 status_t app_identifyCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *cmdPayload);

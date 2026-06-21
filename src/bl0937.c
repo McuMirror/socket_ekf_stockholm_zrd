@@ -322,8 +322,8 @@ void bl0937_resetEnergy(void)
 uint16_t bl0937_getApparentPower(void)
 {
     float i = bl0937_getCurrent() / 100.0f;
-    uint16_t v = bl0937_getVoltage();
-    return (uint16_t)(v * i);
+    float v = bl0937_getVoltage();
+    return (uint16_t)(v * i / 100.0f);
 }
 
 uint16_t bl0937_getReactivePower(void)

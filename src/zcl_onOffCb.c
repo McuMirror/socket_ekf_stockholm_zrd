@@ -198,7 +198,7 @@ static void app_onoff_onWithTimedOffProcess(uint8_t ep, zcl_onoff_onWithTimeOffC
     } else {
         pOnOff->onTime = max2(pOnOff->onTime, cmd->onTime);
         pOnOff->offWaitTime = cmd->offWaitTime;
-        app_onOffUpdate(ZCL_CMD_ONOFF_ON, ep);
+        app_onOffUpdate(ep, ZCL_CMD_ONOFF_ON);
     }
 
     if ((pOnOff->onTime < 0xFFFF) && (pOnOff->offWaitTime < 0xFFFF)) {
@@ -224,7 +224,7 @@ static void app_onoff_offWithEffectProcess(uint8_t ep, zcl_onoff_offWithEffectCm
 
     //TODO:
 
-    app_onOffUpdate(ZCL_CMD_ONOFF_OFF, ep);
+    app_onOffUpdate(ep, ZCL_CMD_ONOFF_OFF);
 }
 
 /*********************************************************************

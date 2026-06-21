@@ -2,16 +2,44 @@
 
 static light_t light;
 
+/*********************************************************************
+ * @fn      led_on
+ *
+ * @brief   turn led on by driving the gpio pin high
+ *
+ * @param   pin - gpio pin number
+ *
+ * @return  None
+ */
 void led_on(uint32_t pin)
 {
     drv_gpio_write(pin, LED_ON);
 }
 
+/*********************************************************************
+ * @fn      led_off
+ *
+ * @brief   turn led off by driving the gpio pin low
+ *
+ * @param   pin - gpio pin number
+ *
+ * @return  None
+ */
 void led_off(uint32_t pin)
 {
     drv_gpio_write(pin, LED_OFF);
 }
 
+/*********************************************************************
+ * @fn      set_led_status
+ *
+ * @brief   set the status led according to the configured led mode
+ *          (off / on / follows relay / inverted relay)
+ *
+ * @param   status - relay on/off state
+ *
+ * @return  None
+ */
 void set_led_status(bool status) {
 #if !UART_PRINTF_MODE
     switch(socket_settings.led_control) {
@@ -35,6 +63,15 @@ void set_led_status(bool status) {
 #endif
 }
 
+/*********************************************************************
+ * @fn      led_init
+ *
+ * @brief   initialise leds — configure gpios, turn both off
+ *
+ * @param   None
+ *
+ * @return  None
+ */
 void led_init(void) {
     TL_SETSTRUCTCONTENT(light, 0);
     light.timerLedEvt = NULL;
@@ -48,6 +85,16 @@ void led_init(void) {
 }
 
 
+/*********************************************************************
+ * @fn      zclLightTimerCb
+ *
+ * @brief   timer callback for network led blinking — toggles the
+ *          led on/off according to the programmed blink pattern
+ *
+ * @param   arg - unused
+ *
+ * @return  interval in ms until next toggle, or -1 to stop
+ */
 int32_t zclLightTimerCb(void *arg)
 {
     uint32_t interval = 0;
@@ -81,6 +128,19 @@ int32_t zclLightTimerCb(void *arg)
     return interval;
 }
 
+/*********************************************************************
+ * @fn      light_blink_start
+ *
+ * @brief   start a blinking pattern on the network led
+ *
+ * @param   times - number of blink cycles
+ *
+ * @param   ledOnTime - on time in ms
+ *
+ * @param   ledOffTime - off time in ms
+ *
+ * @return  None
+ */
 void light_blink_start(uint8_t times, uint16_t ledOnTime, uint16_t ledOffTime)
 {
     uint32_t interval = 0;
@@ -103,6 +163,15 @@ void light_blink_start(uint8_t times, uint16_t ledOnTime, uint16_t ledOffTime)
     }
 }
 
+/*********************************************************************
+ * @fn      light_blink_stop
+ *
+ * @brief   stop the blinking pattern and turn the network led off
+ *
+ * @param   None
+ *
+ * @return  None
+ */
 void light_blink_stop(void) {
 
     uint8_t ret = 0;

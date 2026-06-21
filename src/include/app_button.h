@@ -18,6 +18,6 @@ typedef struct {
 } button_t;
 
 void button_handler(void);
-u8 button_idle();
+u8 button_idle(void);
 
 #endif /* SRC_INCLUDE_APP_BUTTON_H_ */

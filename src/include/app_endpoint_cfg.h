@@ -96,8 +96,8 @@ typedef struct {
     uint16_t power_divisor;
     float    adjust_power;
     uint16_t voltage;
-    int16_t  voltage_min;
-    int16_t  voltage_max;
+    uint16_t voltage_min;
+    uint16_t voltage_max;
     uint16_t voltage_multiplier;
     uint16_t voltage_divisor;
     float    adjust_voltage;
@@ -121,8 +121,8 @@ extern zcl_msAttr_t                 g_zcl_msAttrs;
 
 #define zcl_groupAttrsGet()         &g_zcl_groupAttrs
 #define zcl_sceneAttrGet()          &g_zcl_sceneAttrs
-#define zcl_onOffAttrsGet()         &g_zcl_onOffAttrs;
-#define zcl_seAttrsGet()            &g_zcl_seAttrs;
-#define zcl_msAttrsGet()            &g_zcl_msAttrs;
+#define zcl_onOffAttrsGet()         &g_zcl_onOffAttrs
+#define zcl_seAttrsGet()            &g_zcl_seAttrs
+#define zcl_msAttrsGet()            &g_zcl_msAttrs
 
 #endif /* SRC_INCLUDE_APP_ENDPOINT_CFG_H_ */

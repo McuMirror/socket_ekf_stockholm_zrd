@@ -83,8 +83,8 @@ _attribute_ram_code_ void tuya_zigbee_ota(void) {
         while(faddrw < size) {
             if((faddrw & (FLASH_SECTOR_SIZE - 1)) == 0)
                 app_flash_erase_sector(faddrw); // 45 ms, 4 mA
-                // rd-wr 4kB - 20 ms, 4 mA
-                app_flash_read_page(faddrr, sizeof(buf_blk), (unsigned char *) &buf_blk);
+            // rd-wr 4kB - 20 ms, 4 mA
+            app_flash_read_page(faddrr, sizeof(buf_blk), (unsigned char *) &buf_blk);
             faddrr += sizeof(buf_blk);
             app_flash_write_page(faddrw, sizeof(buf_blk), (unsigned char *) &buf_blk);
             faddrw += sizeof(buf_blk);

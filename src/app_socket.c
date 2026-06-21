@@ -147,6 +147,16 @@ void user_app_init(void)
 //    APP_DEBUG(UART_PRINTF_MODE, "FLASH_ADDR_OF_OTA_IMAGE: 0x%08x\r\n", FLASH_ADDR_OF_OTA_IMAGE);
 }
 
+/*********************************************************************
+ * @fn      app_task
+ *
+ * @brief   main application task — sends device announce, handles
+ *          factory reset, buttons, bl0937, monitoring, and reporting
+ *
+ * @param   None
+ *
+ * @return  None
+ */
 void app_task(void) {
 
     if (!boot_announce_sent && zb_isDeviceJoinedNwk()) {
@@ -167,6 +177,15 @@ void app_task(void) {
 
 extern volatile u16 T_evtExcept[4];
 
+/*********************************************************************
+ * @fn      app_sysException
+ *
+ * @brief   handle system exceptions — log the fault and reset
+ *
+ * @param   None
+ *
+ * @return  None
+ */
 static void app_sysException(void) {
 
     APP_DEBUG(UART_PRINTF_MODE, "app_sysException, line: %d, event: %d, reset\r\n", T_evtExcept[0], T_evtExcept[1]);
@@ -255,6 +274,17 @@ void user_init(bool isRetention)
     rf_setTxPower(MY_RF_POWER_INDEX);
 }
 
+/*********************************************************************
+ * @fn      checksum
+ *
+ * @brief   compute a simple crc8 checksum for nv data validation
+ *
+ * @param   data - pointer to data buffer
+ *
+ * @param   length - size of data in bytes
+ *
+ * @return  computed checksum byte
+ */
 static uint8_t checksum(uint8_t *data, uint16_t length) {
 
     uint8_t crc8 = 0;
@@ -267,6 +297,19 @@ static uint8_t checksum(uint8_t *data, uint16_t length) {
 }
 
 #if UART_PRINTF_MODE
+/*********************************************************************
+ * @fn      print_setting_sr
+ *
+ * @brief   debug helper — print all socket settings to serial
+ *
+ * @param   st - nv operation status
+ *
+ * @param   socket_settings_tmp - pointer to settings struct
+ *
+ * @param   save - true if saving, false if restoring
+ *
+ * @return  None
+ */
 static void print_setting_sr(nv_sts_t st, socket_settings_t *socket_settings_tmp, bool save) {
 
     APP_DEBUG(DEBUG_SAVE_EN, "Settings %s. Return: %s\r\n", save?"saved":"restored", st==NV_SUCC?"Ok":"Error");
@@ -289,7 +332,17 @@ static void print_setting_sr(nv_sts_t st, socket_settings_t *socket_settings_tmp
 }
 #endif
 
-nv_sts_t socket_settings_save() {
+/*********************************************************************
+ * @fn      socket_settings_save
+ *
+ * @brief   save socket settings (onoff, thresholds, calibrations)
+ *          to nv flash with checksum
+ *
+ * @param   None
+ *
+ * @return  nv_sts_t - nv operation result
+ */
+nv_sts_t socket_settings_save(void) {
     nv_sts_t st = NV_SUCC;
 
 #if NV_ENABLE
@@ -309,7 +362,17 @@ nv_sts_t socket_settings_save() {
     return st;
 }
 
-nv_sts_t socket_settings_restore() {
+/*********************************************************************
+ * @fn      socket_settings_restore
+ *
+ * @brief   restore socket settings from nv flash; fall back to
+ *          defaults if no valid data is found
+ *
+ * @param   None
+ *
+ * @return  nv_sts_t - nv operation result
+ */
+nv_sts_t socket_settings_restore(void) {
     nv_sts_t st = NV_SUCC;
 
 #if NV_ENABLE
@@ -333,7 +396,7 @@ nv_sts_t socket_settings_restore() {
         socket_settings_tmp.startUpOnOff = ZCL_START_UP_ONOFF_SET_ONOFF_TO_OFF;
         socket_settings_tmp.status_onoff = ZCL_ONOFF_STATUS_OFF;
         socket_settings_tmp.current_max = DEFAULT_CURRENT_MAX;
-        socket_settings.adjust_current = DEFAULT_ADJUST_CURRENT;
+        socket_settings_tmp.adjust_current = DEFAULT_ADJUST_CURRENT;
         socket_settings_tmp.power_max = DEFAULT_POWER_MAX;
         socket_settings_tmp.adjust_power = DEFAULT_ADJUST_POWER;
         socket_settings_tmp.voltage_min = DEFAULT_VOLTAGE_MIN;
@@ -369,7 +432,17 @@ nv_sts_t socket_settings_restore() {
     return st;
 }
 
-void socket_settints_default() {
+/*********************************************************************
+ * @fn      socket_settints_default
+ *
+ * @brief   reset all socket settings to factory defaults, save to
+ *          flash, update zcl attributes, and turn the relay off
+ *
+ * @param   None
+ *
+ * @return  None
+ */
+void socket_settints_default(void) {
     socket_settings.startUpOnOff = ZCL_START_UP_ONOFF_SET_ONOFF_TO_OFF;
     socket_settings.status_onoff = ZCL_ONOFF_STATUS_OFF;
     socket_settings.current_max = DEFAULT_CURRENT_MAX;
