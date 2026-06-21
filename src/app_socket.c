@@ -259,7 +259,7 @@ void user_init(bool isRetention)
             ZCL_ATTRID_RMS_VOLTAGE, 10, 65000, (uint8_t *)&reportableChange_u16);
 
     /* Current */
-    reportableChange_u16 = 5;
+    reportableChange_u16 = 1;
     bdb_defaultReportingCfg(APP_ENDPOINT1, HA_PROFILE_ID, ZCL_CLUSTER_MS_ELECTRICAL_MEASUREMENT,
             ZCL_ATTRID_RMS_CURRENT, 10, 65000, (uint8_t *)&reportableChange_u16);
 
