@@ -376,8 +376,10 @@ static void app_zclDfltRspCmd(zclDefaultRspCmd_t *pDftRspCmd)
  */
 static void app_zclCfgReportCmd(uint8_t endPoint, uint16_t clusterId, zclCfgReportCmd_t *pCfgReportCmd)
 {
-    //APP_DEBUG(DEBUG_ZCL_CB_EN, "app_zclCfgReportCmd\r\n");
-//    reportAttrTimerStop();
+    APP_DEBUG(DEBUG_ZCL_CB_EN, "app_zclCfgReportCmd\r\n");
+    for (uint8_t i = 0; i < pCfgReportCmd->numAttr; i++) {
+        app_forcedReport(endPoint, clusterId, pCfgReportCmd->attrList[i].attrID);
+    }
 }
 
 /*********************************************************************

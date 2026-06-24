@@ -57,6 +57,78 @@
           "cluster": "0B04_ElectricalMeasurement",
           "attribute": "F006_AutoRestart",
           "zclDataType": "BOOLEAN"
+        },
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "0505_RMSVoltage",
+          "zclDataType": "UNSIGNED_16_BIT_INTEGER"
+        },
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "0508_RMSCurrent",
+          "zclDataType": "UNSIGNED_16_BIT_INTEGER"
+        },
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "050B_ActivePower",
+          "zclDataType": "SIGNED_16_BIT_INTEGER"
+        },
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "0600_ACVoltageMultiplier",
+          "zclDataType": "UNSIGNED_16_BIT_INTEGER"
+        },
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "0601_ACVoltageDivisor",
+          "zclDataType": "UNSIGNED_16_BIT_INTEGER"
+        },
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "0602_ACCurrentMultiplier",
+          "zclDataType": "UNSIGNED_16_BIT_INTEGER"
+        },
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "0603_ACCurrentDivisor",
+          "zclDataType": "UNSIGNED_16_BIT_INTEGER"
+        },
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "0604_ACPowerMultiplier",
+          "zclDataType": "UNSIGNED_16_BIT_INTEGER"
+        },
+        {
+          "endpoint": 1,
+          "cluster": "0B04_ElectricalMeasurement",
+          "attribute": "0605_ACPowerDivisor",
+          "zclDataType": "UNSIGNED_16_BIT_INTEGER"
+        },
+        {
+          "endpoint": 1,
+          "cluster": "0702_Metering",
+          "attribute": "0000_CurrentSummationDelivered",
+          "zclDataType": "UNSIGNED_48_BIT_INTEGER"
+        },
+        {
+          "endpoint": 1,
+          "cluster": "0702_Metering",
+          "attribute": "0301_Multiplier",
+          "zclDataType": "UNSIGNED_24_BIT_INTEGER"
+        },
+        {
+          "endpoint": 1,
+          "cluster": "0702_Metering",
+          "attribute": "0302_Divisor",
+          "zclDataType": "UNSIGNED_24_BIT_INTEGER"
         }
       ]
     },

@@ -14,6 +14,7 @@
 #include "app_onoff.h"
 #include "app_relay.h"
 #include "app_monitoring.h"
+#include "app_reporting.h"
 
 #define PROTECT_CONTROL_OFF     0x00
 #define PROTECT_CONTROL_ON      0x01

@@ -20,6 +20,7 @@ $(OUT_PATH)/$(SRC_PATH)/zcl_onOffCb.o \
 $(OUT_PATH)/$(SRC_PATH)/app_onoff.o \
 $(OUT_PATH)/$(SRC_PATH)/app_relay.o \
 $(OUT_PATH)/$(SRC_PATH)/app_monitoring.o \
+$(OUT_PATH)/$(SRC_PATH)/app_reporting.o \
 $(OUT_PATH)/$(SRC_PATH)/factory_reset.o \
 $(OUT_PATH)/$(SRC_PATH)/app_socket.o
 
