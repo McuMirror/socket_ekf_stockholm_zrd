@@ -43,6 +43,22 @@ static volatile uint8_t _mode;
 
 static uint32_t _last_sel_tick = 0;
 
+#define POW_BUF_SZ   5
+#define VLT_BUF_SZ   3
+#define CUR_BUF_SZ   3
+
+static uint32_t _power_us_buf[POW_BUF_SZ];
+static uint8_t  _power_us_cnt, _power_us_idx;
+static uint32_t _last_power_us;
+
+static uint32_t _voltage_us_buf[VLT_BUF_SZ];
+static uint8_t  _voltage_us_cnt, _voltage_us_idx;
+static uint32_t _last_voltage_us;
+
+static uint32_t _current_us_buf[CUR_BUF_SZ];
+static uint8_t  _current_us_cnt, _current_us_idx;
+static uint32_t _last_current_us;
+
 static void _calcDefaultCurrentMultiplier(void)
 {
     _current_multiplier = ( 531500000.0f * _vref / _current_resistor / 24.0f / F_OSC) / 1.166666f;
@@ -63,6 +79,38 @@ static void _calcDefaultMultipliers(void)
     _calcDefaultCurrentMultiplier();
     _calcDefaultVoltageMultiplier();
     _calcDefaultPowerMultiplier();
+}
+
+static void _buf_push(uint32_t *buf, uint8_t size, uint8_t *cnt, uint8_t *idx, uint32_t val)
+{
+    buf[*idx] = val;
+    *idx = (*idx + 1) % size;
+    if (*cnt < size) (*cnt)++;
+}
+
+static uint32_t _buf_mean(const uint32_t *buf, uint8_t cnt)
+{
+    uint32_t sum = 0;
+    for (uint8_t i = 0; i < cnt; i++) sum += buf[i];
+    return (sum + cnt / 2) / cnt;
+}
+
+static uint32_t _buf_median(const uint32_t *buf, uint8_t size)
+{
+    uint32_t tmp[size];
+    for (uint8_t i = 0; i < size; i++) tmp[i] = buf[i];
+
+    for (uint8_t i = 1; i < size; i++) {
+        uint32_t key = tmp[i];
+        int8_t j = (int8_t)i - 1;
+        while (j >= 0 && tmp[j] > key) {
+            tmp[j + 1] = tmp[j];
+            j--;
+        }
+        tmp[j + 1] = key;
+    }
+
+    return tmp[size / 2];
 }
 
 _attribute_ram_code_ static void bl0937_cf_irq(void)
@@ -199,7 +247,17 @@ uint16_t bl0937_getCurrent(void)
 
     if (_current_pulse_ticks > 0) {
         uint32_t us = _current_pulse_ticks / sys_tick_per_us;
-        _current = _current_multiplier / (float)us;
+
+        if (us != _last_current_us) {
+            _buf_push(_current_us_buf, CUR_BUF_SZ, &_current_us_cnt, &_current_us_idx, us);
+            _last_current_us = us;
+        }
+
+        uint32_t filt = (_current_us_cnt < CUR_BUF_SZ)
+                      ? _buf_mean(_current_us_buf, _current_us_cnt)
+                      : _buf_median(_current_us_buf, CUR_BUF_SZ);
+
+        _current = _current_multiplier / (float)filt;
     } else {
         _current = 0;
     }
@@ -211,7 +269,17 @@ uint16_t bl0937_getVoltage(void)
 {
     if (_voltage_pulse_ticks > 0) {
         uint32_t us = _voltage_pulse_ticks / sys_tick_per_us;
-        _voltage = (uint16_t)(_voltage_multiplier * 100.0f / (float)us);
+
+        if (us != _last_voltage_us) {
+            _buf_push(_voltage_us_buf, VLT_BUF_SZ, &_voltage_us_cnt, &_voltage_us_idx, us);
+            _last_voltage_us = us;
+        }
+
+        uint32_t filt = (_voltage_us_cnt < VLT_BUF_SZ)
+                      ? _buf_mean(_voltage_us_buf, _voltage_us_cnt)
+                      : _buf_median(_voltage_us_buf, VLT_BUF_SZ);
+
+        _voltage = (uint16_t)(_voltage_multiplier * 100.0f / (float)filt);
     } else {
         _voltage = 0;
     }
@@ -223,9 +291,17 @@ uint16_t bl0937_getActivePower(void)
 {
     if (_power_pulse_ticks > 0) {
         uint32_t us = _power_pulse_ticks / sys_tick_per_us;
-        _power = (uint16_t)(_power_multiplier / (float)us);
-//        float p = _power_multiplier * 100.0f / (float)us;
-//        _power = (p > POWER_SANE_MAX) ? 0 : (uint16_t)p;
+
+        if (us != _last_power_us) {
+            _buf_push(_power_us_buf, POW_BUF_SZ, &_power_us_cnt, &_power_us_idx, us);
+            _last_power_us = us;
+        }
+
+        uint32_t filt = (_power_us_cnt < POW_BUF_SZ)
+                      ? _buf_mean(_power_us_buf, _power_us_cnt)
+                      : _buf_median(_power_us_buf, POW_BUF_SZ);
+
+        _power = (uint16_t)(_power_multiplier / (float)filt);
     } else {
         _power = 0;
     }
@@ -246,8 +322,8 @@ void bl0937_resetEnergy(void)
 uint16_t bl0937_getApparentPower(void)
 {
     float i = bl0937_getCurrent() / 100.0f;
-    uint16_t v = bl0937_getVoltage();
-    return (uint16_t)(v * i);
+    float v = bl0937_getVoltage();
+    return (uint16_t)(v * i / 100.0f);
 }
 
 uint16_t bl0937_getReactivePower(void)

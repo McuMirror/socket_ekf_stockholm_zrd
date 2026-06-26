@@ -99,8 +99,6 @@ zcl_basicAttr_t g_zcl_basicAttrs =
     .deviceEnable   = TRUE,
 };
 
-uint8_t zclVersionServer;
-
 const zclAttrInfo_t basic_attrTbl[] =
 {
     { ZCL_ATTRID_BASIC_ZCL_VER,             ZCL_UINT8,      R,  (uint8_t*)&g_zcl_basicAttrs.zclVersion      },
@@ -118,18 +116,6 @@ const zclAttrInfo_t basic_attrTbl[] =
 };
 
 #define ZCL_BASIC_ATTR_NUM    sizeof(basic_attrTbl) / sizeof(zclAttrInfo_t)
-
-uint8_t zclVersionServer;
-
-const zclAttrInfo_t version_attrTbl[] =
-{
-    { ZCL_ATTRID_BASIC_ZCL_VER,             ZCL_UINT8,      R,  (uint8_t*)&zclVersionServer                 },
-
-    { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,   ZCL_UINT16,     R,  (uint8_t*)&zcl_attr_global_clusterRevision  },
-};
-
-#define ZCL_BASIC_SERVER_ATTR_NUM    sizeof(version_attrTbl) / sizeof(zclAttrInfo_t)
-
 
 /* Identify */
 zcl_identifyAttr_t g_zcl_identifyAttrs =
@@ -298,8 +284,8 @@ const zclAttrInfo_t ms_attrTbl[] = {
     {ZCL_ATTRID_AC_VOLTAGE_MULTIPLIER,      ZCL_UINT16,   RR,   (uint8_t*)&g_zcl_msAttrs.voltage_multiplier },
     {ZCL_ATTRID_AC_VOLTAGE_DIVISOR,         ZCL_UINT16,   RR,   (uint8_t*)&g_zcl_msAttrs.voltage_divisor    },
     {ZCL_ATTRID_CUSTOM_ADJUST_VOLTAGE, ZCL_SINGLE_PREC,   RW,   (uint8_t*)&g_zcl_msAttrs.adjust_voltage     },
-    {ZCL_ATTRID_RMS_EXTREME_UNDER_VOLTAGE,  ZCL_INT16,    RW,   (uint8_t*)&g_zcl_msAttrs.voltage_min        },
-    {ZCL_ATTRID_RMS_EXTREME_OVER_VOLTAGE,   ZCL_INT16,    RW,   (uint8_t*)&g_zcl_msAttrs.voltage_max        },
+    {ZCL_ATTRID_RMS_EXTREME_UNDER_VOLTAGE,  ZCL_UINT16,   RW,   (uint8_t*)&g_zcl_msAttrs.voltage_min        },
+    {ZCL_ATTRID_RMS_EXTREME_OVER_VOLTAGE,   ZCL_UINT16,   RW,   (uint8_t*)&g_zcl_msAttrs.voltage_max        },
     {ZCL_ATTRID_ACTIVE_POWER,               ZCL_INT16,    RR,   (uint8_t*)&g_zcl_msAttrs.power              },
     {ZCL_ATTRID_AC_POWER_MULTIPLIER,        ZCL_UINT16,   RR,   (uint8_t*)&g_zcl_msAttrs.power_multiplier   },
     {ZCL_ATTRID_AC_POWER_DIVISOR,           ZCL_UINT16,   RR,   (uint8_t*)&g_zcl_msAttrs.power_divisor      },

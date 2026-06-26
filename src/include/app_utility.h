@@ -33,8 +33,8 @@
 #define TIMEOUT_1MIN30SEC   (90   * 1000)       /* timeout 1.5 min  */
 #define TIMEOUT_2MIN        (120  * 1000)       /* timeout 2 min    */
 #define TIMEOUT_5MIN        (300  * 1000)       /* timeout 5 min    */
-#define TIMEOUT_10MIN       9600  * 1000)       /* timeout 10 min   */
-#define TIMEOUT_15MIN       9900  * 1000)       /* timeout 15 min   */
+#define TIMEOUT_10MIN       (9600  * 1000)      /* timeout 10 min   */
+#define TIMEOUT_15MIN       (9900  * 1000)      /* timeout 15 min   */
 #define TIMEOUT_30MIN       (1800 * 1000)       /* timeout 30 min   */
 #define TIMEOUT_60MIN       (3600 * 1000)       /* timeout 60 min   */
 
@@ -65,7 +65,7 @@ uint16_t reverse16(uint16_t in);
 uint8_t *print_str_zcl(uint8_t *str_zcl);
 uint8_t *digit64toString(uint64_t value);
 uint8_t *float_to_string(float val, uint8_t decimals);
-void start_message();
+void start_message(void);
 double nat_log(double x);
 
 #endif /* SRC_INCLUDE_APP_UTILITY_H_ */

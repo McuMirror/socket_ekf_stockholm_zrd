@@ -266,7 +266,7 @@ uint8_t *print_str_zcl(uint8_t *str_zcl) {
 uint32_t mcuBootAddrGet(void);
 #endif
 
-void start_message() {
+void start_message(void) {
 
 #ifdef ZCL_OTA_SUPPORT
     APP_DEBUG(UART_PRINTF_MODE, "OTA mode enabled. MCU boot from address: 0x%x\r\n", mcuBootAddrGet());

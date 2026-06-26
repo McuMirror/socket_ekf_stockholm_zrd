@@ -10,13 +10,13 @@ typedef struct __attribute__((packed)) {
     uint8_t  crc    :8;
 } energy_cons_t;
 
-void monitoring_handler();
-void energy_restore();
-void energy_save();
-void energy_remove();
-void clear_auto_restart();
-void set_energy();
+void monitoring_handler(void);
+void energy_restore(void);
+void energy_save(void);
+void energy_remove(void);
+void clear_auto_restart(void);
+void set_energy(void);
 int32_t energy_timerCb(void *args);
-void reset_voltage();
+void reset_voltage(void);
 
 #endif /* SRC_INCLUDE_APP_MONITORING_H_ */

@@ -1,5 +1,15 @@
 #include "app_socket.h"
 
+/*********************************************************************
+ * @fn      net_steer_start_offCb
+ *
+ * @brief   timer callback to clear the network steering flag
+ *          and stop blinking after factory reset
+ *
+ * @param   args - unused
+ *
+ * @return  -1 to stop the timer
+ */
 static int32_t net_steer_start_offCb(void *args) {
 
     g_appCtx.net_steer_start = false;
@@ -9,6 +19,16 @@ static int32_t net_steer_start_offCb(void *args) {
     return -1;
 }
 
+/*********************************************************************
+ * @fn      buttonKeepPressed
+ *
+ * @brief   handle long press (5s) — trigger factory reset and
+ *          start network steering with blink indication
+ *
+ * @param   btNum - button index (1-based)
+ *
+ * @return  None
+ */
 static void buttonKeepPressed(u8 btNum) {
     g_appCtx.button[btNum-1].state = APP_FACTORY_NEW_DOING;
     g_appCtx.button[btNum-1].ctn = 0;
@@ -25,6 +45,15 @@ static void buttonKeepPressed(u8 btNum) {
 }
 
 
+/*********************************************************************
+ * @fn      buttonSinglePressed
+ *
+ * @brief   handle single press — toggle relay on/off
+ *
+ * @param   btNum - button index (1-based)
+ *
+ * @return  None
+ */
 static void buttonSinglePressed(u8 btNum) {
 
     switch (btNum) {
@@ -50,6 +79,16 @@ static void buttonSinglePressed(u8 btNum) {
 //}
 
 
+/*********************************************************************
+ * @fn      buttonCheckCommand
+ *
+ * @brief   evaluate click count after release and dispatch
+ *          the corresponding action (single press only)
+ *
+ * @param   btNum - button index (1-based)
+ *
+ * @return  None
+ */
 static void buttonCheckCommand(uint8_t btNum) {
     g_appCtx.button[btNum-1].state = APP_STATE_NORMAL;
 
@@ -67,6 +106,16 @@ static void buttonCheckCommand(uint8_t btNum) {
 }
 
 
+/*********************************************************************
+ * @fn      keyScan_keyPressedCB
+ *
+ * @brief   callback when a key is pressed — record timestamp,
+ *          increment click count, and provide feedback blink
+ *
+ * @param   kbEvt - keyboard event with keycode data
+ *
+ * @return  None
+ */
 void keyScan_keyPressedCB(kb_data_t *kbEvt) {
 
     u8 keyCode = kbEvt->keycode[0];
@@ -82,6 +131,16 @@ void keyScan_keyPressedCB(kb_data_t *kbEvt) {
 }
 
 
+/*********************************************************************
+ * @fn      keyScan_keyReleasedCB
+ *
+ * @brief   callback when a key is released — record release
+ *          timestamp and set state to released
+ *
+ * @param   keyCode - released key code
+ *
+ * @return  None
+ */
 void keyScan_keyReleasedCB(u8 keyCode){
     if (keyCode != 0xff) {
         g_appCtx.button[keyCode-1].released_time = clock_time();
@@ -91,6 +150,17 @@ void keyScan_keyReleasedCB(u8 keyCode){
     }
 }
 
+/*********************************************************************
+ * @fn      button_handler
+ *
+ * @brief   periodic button task — detects long press (5s) and
+ *          release timeout (250ms), dispatches key events from
+ *          the keyboard scanner
+ *
+ * @param   None
+ *
+ * @return  None
+ */
 void button_handler(void) {
     static u8 valid_keyCode = 0xff;
 
@@ -126,7 +196,17 @@ void button_handler(void) {
     }
 }
 
-u8 button_idle() {
+/*********************************************************************
+ * @fn      button_idle
+ *
+ * @brief   check if any button activity is still pending
+ *          (key pressed or unprocessed clicks)
+ *
+ * @param   None
+ *
+ * @return  true if busy, false if idle
+ */
+u8 button_idle(void) {
 
     if (g_appCtx.keyPressed) {
         return true;
